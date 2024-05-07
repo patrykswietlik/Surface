@@ -1,0 +1,18 @@
+.button {
+	padding: 1em 4em;
+	background-color: var(--black-bgc);
+	font-size: 1rem;
+	font-weight: 600;
+	color: white;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.button--valid:hover {
+	background-color: var(--gray);
+}
+
+.button--disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}

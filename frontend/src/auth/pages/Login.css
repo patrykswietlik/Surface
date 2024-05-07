@@ -1,0 +1,14 @@
+.login {
+	transform: translateY(-104px);
+}
+
+.login__form {
+	padding: 5em;
+	background-color: white;
+}
+
+.login__errors {
+	margin-bottom: 1em;
+	font-size: 1rem;
+	color: red;
+}

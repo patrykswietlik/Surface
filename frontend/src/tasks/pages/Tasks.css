@@ -1,0 +1,26 @@
+.tasks {
+	transform: translateY(-104px);
+}
+
+.tasks__section {
+	margin-bottom: 2em;
+	display: flex;
+	justify-content: space-evenly;
+	gap: 2em;
+}
+
+.tasks__card-title {
+	margin-bottom: 1em;
+}
+
+.tasks__actions {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+	.tasks__section {
+		flex-direction: column;
+	}
+}

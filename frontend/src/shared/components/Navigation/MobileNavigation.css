@@ -1,0 +1,15 @@
+.nav__mobile {
+	position: relative;
+	width: 100%;
+	height: 5em;
+	display: none;
+	align-items: center;
+	background-color: var(--black-bgc);
+	border-bottom: 0.1em solid var(--gray);
+}
+
+@media (max-width: 576px) {
+	.nav__mobile {
+		display: flex;
+	}
+}

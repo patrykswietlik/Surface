@@ -1,0 +1,25 @@
+.task-item {
+	width: 95%;
+	padding-bottom: 1em;
+	border-bottom: 0.1em solid var(--light-gray);
+	transition: all 0.3s;
+}
+
+.task-item span {
+	font-weight: 600;
+}
+
+.task-item--picked {
+	opacity: 0.3;
+}
+
+.task-item__action-btn {
+	text-align: end;
+}
+
+@media (max-width: 576px) {
+	.task-item__action-btn {
+		text-align: center;
+		margin-top: 1em;
+	}
+}

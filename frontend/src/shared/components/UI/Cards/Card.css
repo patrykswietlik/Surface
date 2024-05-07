@@ -1,0 +1,22 @@
+.card {
+	padding: 2em;
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+}
+
+.card--half {
+	width: 50%;
+	height: 500px;
+}
+
+.card--full {
+	width: 100%;
+	height: 750px;
+}
+
+@media (max-width: 768px) {
+	.card--half {
+		width: 100%;
+	}
+}
