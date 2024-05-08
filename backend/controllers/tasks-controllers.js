@@ -74,28 +74,6 @@ const getTasksByUserTeam = async (req, res, next) => {
 	res.json({ tasks: tasks.map(task => task.toObject({ getters: true })) });
 };
 
-const modifyTask = async (taskId, modifiedValues, session) => {
-	let existingTask;
-	try {
-		existingTask = await Task.findById(taskId);
-	} catch (err) {
-		return next(new HttpError('Could not get task, please try again.', 500));
-	}
-
-	existingTask.title = modifiedValues.title;
-	existingTask.description = modifiedValues.description;
-	existingTask.deadline = modifiedValues.deadline;
-	existingTask.isTaken = modifiedValues.isTaken;
-	existingTask.isCompleted = modifiedValues.isCompleted;
-	existingTask.isFlagged = modifiedValues.isFlagged;
-
-	try {
-		await existingTask.save({ session });
-	} catch (err) {
-		return next(new HttpError('Could not save modified task, please try again.', 500));
-	}
-};
-
 const patchAllTasks = async (req, res, next) => {
 	const tasks = req.body;
 
@@ -109,7 +87,31 @@ const patchAllTasks = async (req, res, next) => {
 
 		await Promise.all(
 			tasks.map(async task => {
-				await modifyTask(task.id, task, session);
+				const taskId = task.id;
+				let existingTask = undefined;
+
+				try {
+					existingTask = await Task.findById(taskId);
+				} catch (err) {
+					return err;
+				}
+
+				if (!existingTask) {
+					throw new HttpError('Task does not exists.', 404);
+				}
+
+				existingTask.title = task.title;
+				existingTask.description = task.description;
+				existingTask.deadline = task.deadline;
+				existingTask.isTaken = task.isTaken;
+				existingTask.isCompleted = task.isCompleted;
+				existingTask.isFlagged = task.isFlagged;
+
+				try {
+					await existingTask.save();
+				} catch (err) {
+					throw new HttpError('Could not save tasks, please try again.', 500);
+				}
 			})
 		);
 		await session.commitTransaction();

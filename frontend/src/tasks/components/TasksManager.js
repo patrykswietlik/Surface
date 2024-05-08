@@ -18,7 +18,9 @@ const TasksManager = ({ tasks, onComplete, onFlag, onRemove, onReset, revalidato
 			},
 			body: JSON.stringify(tasks),
 		});
+		console.log(response);
 		const responseData = await response.json();
+		console.log(responseData);
 		setIsLoading(false);
 		revalidator.revalidate();
 	};

@@ -1,0 +1,22 @@
+.burger-btn {
+	position: relative;
+	width: 3em;
+	height: 3em;
+	padding: 0.2em;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	background: none;
+	border: none;
+	z-index: 1001;
+}
+
+.burger-btn__line {
+	width: 100%;
+	height: 3px;
+	background-color: white;
+}
+
+.burger__fixed {
+	position: fixed;
+}
