@@ -79,5 +79,5 @@ export const action = async ({ request }) => {
 
 	localStorage.setItem('token', responseData.token);
 
-	return redirect(`/users/${responseData.id}/overview`);
+	return redirect(`/user/${responseData.id}/overview`);
 };

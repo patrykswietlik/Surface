@@ -1,0 +1,11 @@
+.member {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.member__info h3 {
+	margin-bottom: 0.5em;
+	font-size: 2rem;
+}

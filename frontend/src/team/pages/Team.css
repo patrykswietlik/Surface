@@ -1,0 +1,14 @@
+.team {
+	transform: translateY(-104px);
+}
+
+.team__card-title {
+	margin-bottom: 1em;
+}
+
+.team__members-list {
+	display: flex;
+
+	gap: 1em;
+	flex-wrap: wrap;
+}

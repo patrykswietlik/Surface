@@ -7,6 +7,7 @@ import Signup from './auth/pages/Signup';
 import Login, { action as authAction } from './auth/pages/Login';
 import Error from './shared/components/Error/Error';
 import { loader as authLoader } from './shared/utils/auth';
+import Team, { loader as teamLoader } from './team/pages/Team';
 
 import './App.css';
 
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
 		element: <RootLayout />,
 		children: [
 			{
-				path: 'users',
+				path: 'user',
 				children: [{ path: ':userId/overview', element: <Overview />, loader: userLoader }],
 			},
 			{
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
 				errorElement: <Error />,
 				children: [{ path: ':userId', element: <Tasks />, loader: tasksLoader }],
 			},
+			{ path: 'team', children: [{ path: ':userId', loader: teamLoader, element: <Team /> }] },
 			{
 				path: 'auth',
 				children: [

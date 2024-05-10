@@ -30,7 +30,7 @@
 
 .manager__list {
 	height: 100%;
-	padding: 0 1em;
+	padding-right: 1em;
 	display: flex;
 	flex-direction: column;
 	gap: 2em;

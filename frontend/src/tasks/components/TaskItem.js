@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import ActionButton from '../../shared/components/UI/Buttons/ActionButton';
 

@@ -24,7 +24,7 @@ const MobileNavigation = () => {
 			<>
 				<ul className={`nav__links ${isShown ? 'isShown' : ''}`}>
 					<NavLink
-						to={`users/${userId}/overview`}
+						to={`user/${userId}/overview`}
 						className={({ isActive }) => (isActive ? 'active' : 'inactive')}
 						onClick={toggleNavHandler}>
 						Overview
@@ -35,7 +35,10 @@ const MobileNavigation = () => {
 						onClick={toggleNavHandler}>
 						Tasks
 					</NavLink>
-					<NavLink to={`user/${userId}/team`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+					<NavLink
+						to={`team/${userId}`}
+						className={({ isActive }) => (isActive ? 'active' : 'inactive')}
+						onClick={toggleNavHandler}>
 						Team
 					</NavLink>
 				</ul>

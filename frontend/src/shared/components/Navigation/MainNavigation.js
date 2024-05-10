@@ -15,13 +15,13 @@ const MainNavigation = () => {
 	if (token) {
 		navContent = (
 			<ul className='nav__content-links'>
-				<NavLink to={`users/${userId}/overview`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+				<NavLink to={`user/${userId}/overview`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Overview
 				</NavLink>
 				<NavLink to={`tasks/${userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Tasks
 				</NavLink>
-				<NavLink to={`user/${userId}/team`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+				<NavLink to={`team/${userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Team
 				</NavLink>
 			</ul>
