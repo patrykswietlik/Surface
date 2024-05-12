@@ -6,14 +6,15 @@ export const useForm = (inputs, formValidity) => {
 		formValidity,
 	});
 
-	const validityHandler = useCallback((name, isValid) => {
+	const validityHandler = useCallback((name, isValid, value) => {
 		const changedValidity = { ...formState };
-		changedValidity.inputs[name] = isValid;
+		changedValidity.inputs[name].valid = isValid;
+		changedValidity.inputs[name].value = value;
 
 		let formIsValid = true;
 
 		for (const key in changedValidity.inputs) {
-			if (!changedValidity.inputs[key]) {
+			if (!changedValidity.inputs[key].valid) {
 				formIsValid = false;
 			}
 		}

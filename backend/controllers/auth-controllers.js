@@ -1,3 +1,6 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 
@@ -15,10 +18,17 @@ const signup = async (req, res, next) => {
 		return next(new HttpError('User already exists, please login instead.', 422));
 	}
 
+	let hashedPassword = null;
+	try {
+		hashedPassword = await bcrypt.hash(password, 12);
+	} catch (err) {
+		return next(new HttpError('Could not create User, please try again.', 500));
+	}
+
 	const createdUser = new User({
 		name,
 		email,
-		password,
+		password: hashedPassword,
 		team: undefined,
 	});
 
@@ -27,6 +37,8 @@ const signup = async (req, res, next) => {
 	} catch (err) {
 		return next(new HttpError('Could not save user.', 500));
 	}
+
+	//TODO: creating and sending token
 
 	res.json(createdUser.toObject({ getters: true }));
 };
@@ -41,12 +53,31 @@ const login = async (req, res, next) => {
 		return next(new HttpError('Loggin in failed, please try again.', 500));
 	}
 
-	if (!existingUser || existingUser.password !== password) {
+	if (!existingUser) {
 		return next(new HttpError('Invalid credentials, please try again.', 401));
 	}
 
-	const token = 'random_server_token';
-	res.json({ token, id: existingUser.toObject({ getters: true }).id });
+	let isValidPassword = false;
+	try {
+		isValidPassword = await bcrypt.compare(password, existingUser.password);
+	} catch (err) {
+		return next(new HttpError('Could not authentice, please try again.', 500));
+	}
+
+	if (!isValidPassword) {
+		return next(new HttpError('Invalid credentials, please try again.', 401));
+	}
+
+	let token = null;
+	try {
+		token = jwt.sign({ userId: existingUser.id, email: existingUser.email }, 'top_secret_private_key', {
+			expiresIn: '1h',
+		});
+	} catch (err) {
+		return next(new HttpError('Could not authentice, please try again.', 500));
+	}
+
+	res.json({ userId: existingUser.id, token });
 };
 
 exports.signup = signup;

@@ -5,6 +5,10 @@
 	background-color: white;
 }
 
+.card--wide {
+	width: 100%;
+}
+
 .card--third {
 	width: 30%;
 	min-width: 300px;

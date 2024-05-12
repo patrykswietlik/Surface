@@ -1,4 +1,6 @@
-import { Form, json, redirect, useActionData } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../shared/context/auth-context';
+import { json, redirect, useNavigate } from 'react-router-dom';
 
 import { useForm } from '../../shared/hooks/form-hook';
 import Header from '../../shared/components/Header/Header';
@@ -9,22 +11,57 @@ import Button from '../../shared/components/UI/Buttons/Button';
 import './Login.css';
 
 const Login = () => {
+	const [error, setError] = useState(undefined);
+	const authCtx = useContext(AuthContext);
+	const navigate = useNavigate();
 	const [formState, validityHandler] = useForm(
 		{
-			email: false,
-			password: false,
+			email: {
+				valid: false,
+				value: '',
+			},
+			password: {
+				valid: false,
+				value: '',
+			},
 		},
 		false
 	);
 
-	const errors = useActionData();
+	useEffect(() => {
+		authCtx.logout();
+	}, []);
+
+	const onLogin = async event => {
+		event.preventDefault();
+		const email = formState.inputs.email.value;
+		const password = formState.inputs.password.value;
+
+		const response = await fetch('http://localhost:5000/api/auth/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ email, password }),
+		});
+
+		if (!response.ok) {
+			setError('Invalid credentials, please try again');
+			return;
+		}
+
+		const responseData = await response.json();
+		console.log(responseData);
+		authCtx.login(responseData.userId, responseData.token);
+		navigate(`/user/${responseData.userId}/overview`);
+	};
 
 	return (
 		<>
 			<Header title='Login' text='Please provide your credentials.' />
 			<main className='login'>
 				<Wrapper>
-					<Form method='post' className='login__form'>
+					<form method='post' className='login__form' onSubmit={onLogin}>
 						<Input
 							label='E-mail'
 							type='email'
@@ -43,13 +80,9 @@ const Login = () => {
 							validators={['MIN-LENGTH']}
 							onInput={validityHandler}
 						/>
-						{errors && (
-							<p className='login__errors'>
-								{errors.message ? errors.message : 'Something went wrong. Please try again.'}
-							</p>
-						)}
+						{error && <p className='login__errors'>{error ? error : 'Something went wrong. Please try again.'}</p>}
 						<Button text='Login' disabled={!formState.formValidity} type='submit' />
-					</Form>
+					</form>
 				</Wrapper>
 			</main>
 		</>

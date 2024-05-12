@@ -1,14 +1,10 @@
-import { useState } from 'react';
-
 import ActionButton from '../../shared/components/UI/Buttons/ActionButton';
 
 import './TaskItem.css';
 
-const TaskItem = ({ id, title, description, deadline, displayOnly, onTake }) => {
-	const [isPicked, setIsPicked] = useState(false);
-
+const TaskItem = ({ id, title, description, deadline, isTaken, displayOnly, onTake }) => {
 	return (
-		<li className={`task-item ${isPicked && 'task-item--picked'}`}>
+		<li className={`task-item ${isTaken && 'task-item--picked'}`}>
 			<h3>{title}</h3>
 			<p>{description}</p>
 			<p>
@@ -18,19 +14,15 @@ const TaskItem = ({ id, title, description, deadline, displayOnly, onTake }) => 
 			{!displayOnly && (
 				<p className='task-item__action-btn'>
 					<ActionButton
-						text='Take'
-						onClick={() => {
-							setIsPicked(true);
-							onTake({
-								id,
-								title,
-								description,
-								deadline,
-								isTaken: true,
-								isCompleted: false,
-								isFlagged: false,
-							});
-						}}
+						text={isTaken ? 'Taken' : 'Take'}
+						disabled={isTaken}
+						onClick={
+							isTaken
+								? () => {}
+								: () => {
+										onTake(id);
+								  }
+						}
 					/>
 				</p>
 			)}

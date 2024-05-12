@@ -1,0 +1,39 @@
+.task {
+	position: relative;
+	cursor: pointer;
+}
+
+.task h3 {
+	position: relative;
+	padding-left: 2em;
+}
+
+.task h3::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 1em;
+	height: 0.3em;
+	transform: translateY(-50%);
+	background-color: black;
+}
+
+.task__details {
+	padding-top: 2em;
+}
+
+.task__details p {
+	margin-bottom: 2em;
+}
+
+.task__actions {
+	display: flex;
+	gap: 1em;
+}
+
+.task__tags {
+	position: absolute;
+	top: 0;
+	right: 0;
+}

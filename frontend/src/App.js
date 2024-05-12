@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import AuthContextProvider from './shared/context/auth-context';
 import RootLayout from './shared/layouts/RootLayout';
 import Overview, { loader as userLoader } from './user/pages/Overview';
 import Tasks, { loader as tasksLoader } from './tasks/pages/Tasks';
@@ -22,7 +23,6 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'tasks',
-				loader: authLoader,
 				errorElement: <Error />,
 				children: [{ path: ':userId', element: <Tasks />, loader: tasksLoader }],
 			},
@@ -40,7 +40,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-	return <RouterProvider router={router} />;
+	return (
+		<AuthContextProvider>
+			<RouterProvider router={router} />
+		</AuthContextProvider>
+	);
 }
 
 export default App;

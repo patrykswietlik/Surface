@@ -29,3 +29,7 @@
 	background-color: var(--black-bgc);
 	color: white;
 }
+
+.action-button--blocked {
+	cursor: not-allowed;
+}

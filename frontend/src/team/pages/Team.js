@@ -1,8 +1,7 @@
-import { json, useLoaderData } from 'react-router-dom';
+import { json, redirect, useLoaderData } from 'react-router-dom';
 
 import Header from '../../shared/components/Header/Header';
 import Wrapper from '../../shared/components/Layout/Wrapper';
-import Card from '../../shared/components/UI/Cards/Card';
 import Member from './Member';
 
 import './Team.css';
@@ -34,7 +33,7 @@ export const loader = async ({ params }) => {
 	const response = await fetch(`http://localhost:5000/api/teams/${userId}`);
 
 	if (!response.ok) {
-		throw json({ message: 'Something went wrong.' }, { status: 500 });
+		return redirect('/auth/login');
 	}
 
 	const responseData = await response.json();

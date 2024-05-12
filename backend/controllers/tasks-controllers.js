@@ -67,7 +67,7 @@ const getTasksByUserTeam = async (req, res, next) => {
 };
 
 const patchAllTasks = async (req, res, next) => {
-	const tasks = req.body;
+	const { tasks, userId } = req.body;
 
 	if (!tasks) {
 		return res.json({ message: 'Nothing to change. Please select at least one task.' });
@@ -93,6 +93,12 @@ const patchAllTasks = async (req, res, next) => {
 				existingTask.payload.isCompleted = task.isCompleted;
 				existingTask.payload.isFlagged = task.isFlagged;
 
+				if (task.isTaken) {
+					existingTask.payload.user = userId;
+				} else {
+					existingTask.payload.user = undefined;
+				}
+
 				try {
 					await existingTask.payload.save();
 				} catch (err) {
@@ -102,46 +108,96 @@ const patchAllTasks = async (req, res, next) => {
 		);
 		await session.commitTransaction();
 	} catch (err) {
+		console.log(err);
 		return next(new HttpError('Could not perform changes, please try again.', 500));
 	}
 
 	res.json({ message: 'Tasks updated.' });
 };
 
-// I don't know yet if it is still used or even required, but let's leave it for now.
-const assignTaskToUser = async (req, res, next) => {
-	const { user } = req.body;
-	const userId = user;
-	const taskId = req.params.taskId;
-	let existingTask = await getExistingObject('Task', taskId);
-
-	if (!existingTask.ok) {
-		return next(new HttpError(existingTask.message, existingTask.status));
-	}
-
+const getTasksForTeam = async (req, res, next) => {
+	const userId = req.params.userId;
 	let existingUser = await getExistingObject('User', userId);
 
 	if (!existingUser.ok) {
 		return next(new HttpError(existingUser.message, existingUser.status));
 	}
 
-	if (existingUser.payload.team.name !== existingTask.payload.team.name) {
-		return next(new HttpError("That User can't take this task.", 422));
+	let tasks = [];
+	try {
+		tasks = await Task.find({ team: existingUser.payload.team });
+	} catch (err) {
+		return next(new HttpError('Could not get Tasks, please try again.', 500));
+	}
+
+	res.json(tasks.map(task => task.toObject({ getters: true })));
+};
+
+const assignUserToTask = async (req, res, next) => {
+	const { userId } = req.body;
+	const taskId = req.params.taskId;
+	let existingUser = await getExistingObject('User', userId);
+
+	if (!existingUser.ok) {
+		return next(new HttpError(existingUser.message, existingUser.status));
+	}
+
+	let existingTask = await getExistingObject('Task', taskId);
+
+	if (!existingTask.ok) {
+		return next(new HttpError(existingTask.message, existingTask.status));
 	}
 
 	try {
+		existingTask.payload.user = existingUser.payload;
 		existingTask.payload.isTaken = true;
-		existingTask.payload.user = existingUser;
 		await existingTask.payload.save();
 	} catch (err) {
-		return next(new HttpError('Could not perform assigning task', 500));
+		return next(new HttpError('Could not assign Task, please try again.', 500));
 	}
 
-	res.json({ message: 'Tasks assigned.' });
+	res.json({ message: 'Task assigned.' });
+};
+
+const editTaskState = async (req, res, next) => {
+	const taskId = req.params.taskId;
+	const { type, value } = req.body;
+	let existingTask = await getExistingObject('Task', taskId);
+
+	if (!existingTask.ok) {
+		return next(new HttpError(existingTask.message, existingTask.status));
+	}
+
+	try {
+		switch (type) {
+			case 'COMPLETE':
+				existingTask.payload.isCompleted = value;
+				existingTask.payload.isFlagged = false;
+				break;
+			case 'FLAG':
+				existingTask.payload.isFlagged = value;
+				existingTask.payload.isCompleted = false;
+				break;
+			case 'REMOVE':
+				existingTask.payload.isTaken = value;
+				existingTask.payload.isCompleted = false;
+				existingTask.payload.isFlagged = false;
+				existingTask.payload.user = undefined;
+				break;
+		}
+		await existingTask.payload.save();
+	} catch (err) {
+		return next(new HttpError('Could not edit Task, please try again.', 500));
+	}
+
+	res.json({ mesage: 'Task succesfully edited.' });
 };
 
 exports.addTask = addTask;
 exports.getTasks = getTasks;
 exports.patchAllTasks = patchAllTasks;
-exports.assignTaskToUser = assignTaskToUser;
 exports.getTasksByUserTeam = getTasksByUserTeam;
+
+exports.getTasksForTeam = getTasksForTeam;
+exports.assignUserToTask = assignUserToTask;
+exports.editTaskState = editTaskState;

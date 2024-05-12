@@ -13,10 +13,12 @@
 	margin-bottom: 1em;
 }
 
-.tasks__actions {
+.tasks__user-tasks {
+	width: 100%;
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	flex-direction: column;
+	gap: 2em;
+	list-style: none;
 }
 
 @media (max-width: 768px) {

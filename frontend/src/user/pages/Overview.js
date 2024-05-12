@@ -52,12 +52,7 @@ const DUMMY_TASKS = [
 ];
 
 const Overview = () => {
-	const authCtx = useContext(AuthContext);
 	const user = useLoaderData();
-
-	useEffect(() => {
-		authCtx.login();
-	}, [authCtx]);
 
 	return (
 		<>
@@ -86,12 +81,6 @@ export const loader = async ({ params }) => {
 	}
 
 	const responseData = await response.json();
-
-	const token = localStorage.getItem('token');
-
-	if (!token) {
-		return redirect('/auth/login');
-	}
 
 	return responseData;
 };

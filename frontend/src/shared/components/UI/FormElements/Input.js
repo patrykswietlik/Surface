@@ -33,8 +33,8 @@ const Input = ({ label, type, name, placeholder, errorText, validators, onInput 
 	});
 
 	useEffect(() => {
-		onInput(name, inputState.isValid);
-	}, [name, inputState.isValid, onInput]);
+		onInput(name, inputState.isValid, inputState.value);
+	}, [name, inputState.isValid, inputState.value, onInput]);
 
 	const inputValueChangeHandler = event => {
 		dispatch({

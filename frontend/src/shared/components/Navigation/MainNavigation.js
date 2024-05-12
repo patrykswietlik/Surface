@@ -1,27 +1,29 @@
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/auth-context';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import Wrapper from '../Layout/Wrapper';
-import { getToken } from '../../utils/auth';
 import ActionButton from '../UI/Buttons/ActionButton';
 
 import './MainNavigation.css';
 
 const MainNavigation = () => {
-	const userId = useParams().userId;
+	const authCtx = useContext(AuthContext);
 	const navigate = useNavigate();
-	const token = getToken();
 
 	let navContent;
-	if (token) {
+	if (authCtx.token) {
 		navContent = (
 			<ul className='nav__content-links'>
-				<NavLink to={`user/${userId}/overview`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+				<NavLink
+					to={`user/${authCtx.userId}/overview`}
+					className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Overview
 				</NavLink>
-				<NavLink to={`tasks/${userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+				<NavLink to={`tasks/${authCtx.userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Tasks
 				</NavLink>
-				<NavLink to={`team/${userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+				<NavLink to={`team/${authCtx.userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Team
 				</NavLink>
 			</ul>
@@ -37,7 +39,7 @@ const MainNavigation = () => {
 	}
 
 	const logoutHandler = () => {
-		localStorage.removeItem('token');
+		authCtx.logout();
 		navigate('/auth/login');
 	};
 
@@ -47,7 +49,7 @@ const MainNavigation = () => {
 				<header className='nav__content'>
 					{navContent}
 					<div className='nav__content-actions'>
-						{token && <ActionButton text='Logout' inverse onClick={logoutHandler} />}
+						{authCtx.token && <ActionButton text='Logout' inverse onClick={logoutHandler} />}
 					</div>
 				</header>
 			</Wrapper>

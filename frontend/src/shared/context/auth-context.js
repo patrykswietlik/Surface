@@ -1,27 +1,48 @@
-import { createContext, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 
 export const AuthContext = createContext({
-	isLoggedIn: false,
+	userId: '',
+	token: '',
 	login: () => {},
 	logout: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [userId, setUserId] = useState();
+	const [userToken, setUserToken] = useState();
 
-	const loginHandler = () => {
-		setIsLoggedIn(true);
-	};
+	const loginHandler = useCallback((uid, token) => {
+		setUserId(uid);
+		setUserToken(token);
+		localStorage.setItem(
+			'userData',
+			JSON.stringify({
+				userId: uid,
+				token,
+			})
+		);
+	}, []);
 
-	const logoutHandler = () => {
-		setIsLoggedIn(false);
-	};
+	const logoutHandler = useCallback(() => {
+		setUserId(null);
+		setUserToken(null);
+		localStorage.removeItem('userData');
+	}, []);
 
 	const authCtx = {
-		isLoggedIn,
+		userId,
+		token: userToken,
 		login: loginHandler,
 		logout: logoutHandler,
 	};
+
+	useEffect(() => {
+		const storedData = JSON.parse(localStorage.getItem('userData'));
+
+		if (storedData && storedData.token) {
+			loginHandler(storedData.userId, storedData.token);
+		}
+	}, [loginHandler]);
 
 	return <AuthContext.Provider value={authCtx}>{children}</AuthContext.Provider>;
 };
