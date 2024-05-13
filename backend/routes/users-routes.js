@@ -5,6 +5,7 @@ const usersControllers = require('../controllers/users-controllers');
 const router = express.Router();
 
 router.get('/:userId', usersControllers.getUserById);
-router.post('/:userId/assign', usersControllers.assignUserToTeam);
+router.patch('/:userId/assign', usersControllers.assignUserToTeam);
+router.patch('/:userId/role', usersControllers.changeUserRole);
 
 module.exports = router;

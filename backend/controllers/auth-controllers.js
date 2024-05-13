@@ -30,6 +30,7 @@ const signup = async (req, res, next) => {
 		email,
 		password: hashedPassword,
 		team: undefined,
+		role: 'USER',
 	});
 
 	try {
@@ -70,14 +71,18 @@ const login = async (req, res, next) => {
 
 	let token = null;
 	try {
-		token = jwt.sign({ userId: existingUser.id, email: existingUser.email }, 'top_secret_private_key', {
-			expiresIn: '1h',
-		});
+		token = jwt.sign(
+			{ userId: existingUser.id, email: existingUser.email, role: existingUser.role },
+			'top_secret_private_key',
+			{
+				expiresIn: '1h',
+			}
+		);
 	} catch (err) {
 		return next(new HttpError('Could not authentice, please try again.', 500));
 	}
 
-	res.json({ userId: existingUser.id, token });
+	res.json({ userId: existingUser.id, token, role: existingUser.role });
 };
 
 exports.signup = signup;

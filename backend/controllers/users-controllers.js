@@ -40,7 +40,6 @@ const assignUserToTeam = async (req, res, next) => {
 		await existingUser.payload.save({ session });
 		await session.commitTransaction();
 	} catch (err) {
-		console.log(err);
 		return next(new HttpError('Could not perform action.', 500));
 	}
 
@@ -50,5 +49,30 @@ const assignUserToTeam = async (req, res, next) => {
 	});
 };
 
+const changeUserRole = async (req, res, next) => {
+	const userId = req.params.userId;
+	const { role } = req.body;
+
+	let existingUser = await getExistingObject('User', userId);
+
+	if (!existingUser.ok) {
+		return next(new HttpError(existingUser.message, existingUser.status));
+	}
+
+	if (req.userData.role !== 'ADMIN') {
+		return next(new HttpError('Action is not allowed.', 400));
+	}
+
+	try {
+		existingUser.payload.role = role;
+		await existingUser.payload.save();
+	} catch (err) {
+		return next(new HttpError('Could not perform action.', 500));
+	}
+
+	res.json(existingUser.payload.toObject({ getters: true }));
+};
+
 exports.getUserById = getUserById;
 exports.assignUserToTeam = assignUserToTeam;
+exports.changeUserRole = changeUserRole;

@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
 		}
 
 		const decodedToken = jwt.verify(token, 'top_secret_private_key');
-		req.userData = { userId: decodedToken.userId };
+		req.userData = { userId: decodedToken.userId, role: decodedToken.role };
 
 		next();
 	} catch (err) {

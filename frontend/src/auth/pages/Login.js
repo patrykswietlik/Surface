@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../shared/context/auth-context';
-import { json, redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useForm } from '../../shared/hooks/form-hook';
+import { AuthContext } from '../../shared/context/auth-context';
 import Header from '../../shared/components/Header/Header';
 import Wrapper from '../../shared/components/Layout/Wrapper';
 import Input from '../../shared/components/UI/FormElements/Input';
@@ -90,27 +90,3 @@ const Login = () => {
 };
 
 export default Login;
-
-export const action = async ({ request }) => {
-	const userData = await request.formData();
-	const email = userData.get('email');
-	const password = userData.get('password');
-
-	const response = await fetch('http://localhost:5000/api/auth/login', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ email, password }),
-	});
-
-	if (!response.ok) {
-		return json({ message: 'Invalid credentials, please try again' }, { status: 500 });
-	}
-
-	const responseData = await response.json();
-
-	localStorage.setItem('token', responseData.token);
-
-	return redirect(`/user/${responseData.id}/overview`);
-};
