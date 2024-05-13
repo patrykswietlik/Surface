@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useRevalidator } from 'react-router-dom';
+import { useNavigate, useRevalidator } from 'react-router-dom';
 
 import TaskItem from './TaskItem';
 import { AuthContext } from '../../shared/context/auth-context';
@@ -9,20 +9,22 @@ import './TasksList.css';
 const TasksList = ({ tasks }) => {
 	const authCtx = useContext(AuthContext);
 	const revalidator = useRevalidator();
+	const navigate = useNavigate();
 
 	const takeTaskHandler = async tid => {
 		const userId = authCtx.userId;
 		const response = await fetch(`http://localhost:5000/api/tasks/${tid}/assign`, {
 			method: 'PATCH',
 			headers: {
+				Authorization: 'Baerer ' + authCtx.token,
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ userId }),
 		});
 
 		if (!response.ok) {
-			//TODO: error handling
-			console.log('err');
+			authCtx.logout();
+			navigate('/auth/login');
 		}
 
 		await response.json();

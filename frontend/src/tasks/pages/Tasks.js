@@ -15,8 +15,6 @@ const Tasks = () => {
 	const authCtx = useContext(AuthContext);
 	const tasksData = useLoaderData();
 
-	console.log(tasksData, authCtx.userId);
-
 	return (
 		<>
 			<Header title='Ongoing Tasks' text='Manage tasks, modify their status and keep the deadline.' />
@@ -53,7 +51,13 @@ export default Tasks;
 
 export const loader = async ({ params }) => {
 	const userId = params.userId;
-	const response = await fetch(`http://localhost:5000/api/tasks/${userId}`);
+	const { token } = JSON.parse(localStorage.getItem('userData'));
+
+	const response = await fetch(`http://localhost:5000/api/tasks/${userId}`, {
+		headers: {
+			Authorization: 'Bearer ' + token,
+		},
+	});
 
 	if (!response.ok) {
 		return redirect('/auth/login');

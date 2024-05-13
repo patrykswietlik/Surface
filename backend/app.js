@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth-routes');
 const tasksRoutes = require('./routes/tasks-routes');
 const usersRoutes = require('./routes/users-routes');
 const teamsRoutes = require('./routes/teams-routes');
+const auth = require('./middleware/auth');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use(auth);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/teams', teamsRoutes);

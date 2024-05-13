@@ -1,14 +1,17 @@
-import { useState } from 'react';
-import { useRevalidator } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { useNavigate, useRevalidator } from 'react-router-dom';
 
 import ActionButton from '../../shared/components/UI/Buttons/ActionButton';
+import { AuthContext } from '../../shared/context/auth-context';
 import Tag from './Tag';
 
 import './Task.css';
 
 const Task = ({ id, title, description, isTaken, isCompleted, isFlagged }) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const authCtx = useContext(AuthContext);
 	const revalidator = useRevalidator();
+	const navigate = useNavigate();
 
 	const changeTaskStateHandler = async actionType => {
 		let value;
@@ -26,13 +29,15 @@ const Task = ({ id, title, description, isTaken, isCompleted, isFlagged }) => {
 		const response = await fetch(`http://localhost:5000/api/tasks/${id}/edit`, {
 			method: 'PATCH',
 			headers: {
+				Authorization: 'Baerer ' + authCtx.token,
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({ type: actionType, value }),
 		});
 
 		if (!response.ok) {
-			//TODO: error handling
+			authCtx.logout();
+			navigate('/auth/login');
 		}
 
 		await response.json();

@@ -73,8 +73,13 @@ export default Overview;
 
 export const loader = async ({ params }) => {
 	const userId = params.userId;
+	const { token } = JSON.parse(localStorage.getItem('userData'));
 
-	const response = await fetch(`http://localhost:5000/api/users/${userId}`);
+	const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+		headers: {
+			Authorization: 'Bearer ' + token,
+		},
+	});
 
 	if (!response.ok) {
 		throw json({ message: 'Could not fetch user, please try again.' }, { status: 500 });
