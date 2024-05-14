@@ -29,8 +29,13 @@ export default Team;
 
 export const loader = async ({ params }) => {
 	const userId = params.userId;
+	const { token } = JSON.parse(localStorage.getItem('userData'));
 
-	const response = await fetch(`http://localhost:5000/api/teams/${userId}`);
+	const response = await fetch(`http://localhost:5000/api/teams/${userId}`, {
+		headers: {
+			Authorization: 'Baerer ' + token,
+		},
+	});
 
 	if (!response.ok) {
 		return redirect('/auth/login');

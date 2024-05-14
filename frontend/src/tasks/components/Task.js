@@ -39,7 +39,6 @@ const Task = ({ id, title, description, isTaken, isCompleted, isFlagged }) => {
 			authCtx.logout();
 			navigate('/auth/login');
 		}
-
 		await response.json();
 		revalidator.revalidate();
 	};

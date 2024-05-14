@@ -1,14 +1,18 @@
 import ActionButton from '../../shared/components/UI/Buttons/ActionButton';
+import { convertDate } from '../../shared/utils/date-converter';
 
 import './TaskItem.css';
 
-const TaskItem = ({ id, title, description, deadline, isTaken, displayOnly, onTake }) => {
+const TaskItem = ({ id, title, description, deadline, isTaken, user, displayOnly, onTake }) => {
 	return (
 		<li className={`task-item ${isTaken && 'task-item--picked'}`}>
 			<h3>{title}</h3>
 			<p>{description}</p>
 			<p>
-				<span>Due to:</span> {deadline}
+				<span>Due to:</span> {convertDate(deadline)}
+			</p>
+			<p>
+				<span>{user && <span>Taken by: {user.name}</span>}</span>
 			</p>
 
 			{!displayOnly && (

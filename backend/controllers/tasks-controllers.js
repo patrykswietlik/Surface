@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-error');
 const Task = require('../models/task');
+const Team = require('../models/team');
 
 const getExistingObject = require('../utils/get-existing');
 
@@ -125,7 +126,7 @@ const getTasksForTeam = async (req, res, next) => {
 
 	let tasks = [];
 	try {
-		tasks = await Task.find({ team: existingUser.payload.team });
+		tasks = await Task.find({ team: existingUser.payload.team }).populate('user');
 	} catch (err) {
 		return next(new HttpError('Could not get Tasks, please try again.', 500));
 	}
@@ -193,6 +194,42 @@ const editTaskState = async (req, res, next) => {
 	res.json({ mesage: 'Task succesfully edited.' });
 };
 
+const getTasksForTeams = async (req, res, next) => {
+	const role = req.userData.role;
+
+	if (!role || role !== 'ADMIN') {
+		return next(new HttpError('Action is not allowed.', 400));
+	}
+
+	let teams = [];
+	try {
+		teams = await Team.find();
+	} catch (err) {
+		return next(new HttpError('Could not get Teams, please try again.', 500));
+	}
+
+	let tasks = [];
+	await Promise.all(
+		teams.map(async team => {
+			const tid = team.id;
+			const tname = team.name;
+
+			let tasksForTeam = [];
+			try {
+				tasksForTeam = await Task.find({ team: tid }).populate('user');
+				tasks.push({
+					team: tname,
+					tasks: tasksForTeam,
+				});
+			} catch (err) {
+				return next(new HttpError('Could not get Tasks for Team, please try again.', 500));
+			}
+		})
+	);
+
+	res.json({ tasks });
+};
+
 exports.addTask = addTask;
 exports.getTasks = getTasks;
 exports.patchAllTasks = patchAllTasks;
@@ -201,3 +238,4 @@ exports.getTasksByUserTeam = getTasksByUserTeam;
 exports.getTasksForTeam = getTasksForTeam;
 exports.assignUserToTask = assignUserToTask;
 exports.editTaskState = editTaskState;
+exports.getTasksForTeams = getTasksForTeams;

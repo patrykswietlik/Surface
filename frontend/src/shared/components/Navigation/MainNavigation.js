@@ -26,6 +26,11 @@ const MainNavigation = () => {
 				<NavLink to={`team/${authCtx.userId}`} className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
 					Team
 				</NavLink>
+				{authCtx.role === 'ADMIN' && (
+					<NavLink to='admin' className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+						Admin
+					</NavLink>
+				)}
 			</ul>
 		);
 	} else {

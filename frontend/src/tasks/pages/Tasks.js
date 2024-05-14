@@ -32,8 +32,13 @@ const Tasks = () => {
 					</section>
 					<section className='tasks__section'>
 						<ul className='tasks__user-tasks'>
+							{tasksData.filter(task => task.user && task.user.id === authCtx.userId).length === 0 && (
+								<Card type='card--wide'>
+									<p>You don't have any assigned task, pick one.</p>
+								</Card>
+							)}
 							{tasksData
-								.filter(task => task.user === authCtx.userId)
+								.filter(task => task.user && task.user.id === authCtx.userId)
 								.map(task => (
 									<Card key={task.id} type='card--wide'>
 										<Task {...task} />
@@ -64,5 +69,6 @@ export const loader = async ({ params }) => {
 	}
 
 	const responseData = await response.json();
+
 	return responseData;
 };

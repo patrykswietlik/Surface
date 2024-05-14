@@ -52,7 +52,7 @@ const Login = () => {
 
 		const responseData = await response.json();
 		console.log(responseData);
-		authCtx.login(responseData.userId, responseData.token);
+		authCtx.login(responseData.userId, responseData.token, responseData.role);
 		navigate(`/user/${responseData.userId}/overview`);
 	};
 
