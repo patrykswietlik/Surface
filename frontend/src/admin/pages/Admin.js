@@ -9,18 +9,19 @@ import TasksRecord from '../components/TasksRecord';
 
 const Admin = () => {
 	const tasks = useLoaderData().tasks;
-	console.log(tasks);
 
 	return (
 		<>
 			<Header title='Admin panel' text='Full access to tasks, employees and teams.' />
 			<main className='admin'>
 				<Wrapper>
-					<Card type='card--wide'>
-						{tasks.map(task => (
-							<TasksRecord team={task.team} tasks={task.tasks} />
+					<div className='admin__records'>
+						{tasks.map((task, index) => (
+							<Card key={index} type='card--wide'>
+								<TasksRecord team={task.team} tasks={task.tasks} />
+							</Card>
 						))}
-					</Card>
+					</div>
 				</Wrapper>
 			</main>
 		</>

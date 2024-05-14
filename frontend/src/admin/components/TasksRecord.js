@@ -9,7 +9,7 @@ const TasksRecord = ({ team, tasks }) => {
 			<ul className='tasks-record__list'>
 				{tasks.length === 0 && <p>No tasks.</p>}
 				{tasks.map(task => (
-					<li className='tasks-record__task'>
+					<li key={task._id} className='tasks-record__task'>
 						<h4>{task.title}</h4>
 						<p>{task.description}</p>
 						<p>{convertDate(task.deadline)}</p>

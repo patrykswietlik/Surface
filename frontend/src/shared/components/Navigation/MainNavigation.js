@@ -52,7 +52,10 @@ const MainNavigation = () => {
 		<nav className='nav'>
 			<Wrapper>
 				<header className='nav__content'>
-					{navContent}
+					<div className='nav__content-main'>
+						<h1>Surface</h1>
+						{navContent}
+					</div>
 					<div className='nav__content-actions'>
 						{authCtx.token && <ActionButton text='Logout' inverse onClick={logoutHandler} />}
 					</div>

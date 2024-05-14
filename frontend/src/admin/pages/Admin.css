@@ -1,3 +1,9 @@
 .admin {
 	transform: translateY(-104px);
 }
+
+.admin__records {
+	display: flex;
+	flex-direction: column;
+	gap: 2em;
+}
